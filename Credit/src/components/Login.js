@@ -1,9 +1,13 @@
+// Login.js
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = ({ onLogin }) => {
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const navigate = useNavigate(); // <== Add this
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -11,9 +15,21 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/login", form);
+      const formData = new URLSearchParams();
+      formData.append("username", form.email);
+      formData.append("password", form.password);
+
+      const response = await axios.post(
+        "http://localhost:8000/login",
+        formData,
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+
       localStorage.setItem("token", response.data.access_token);
-      onLogin();
+      if (onLogin) onLogin(); // Call it safely
+      navigate("/dashboard"); // Redirect here// 👈 redirect to dashboard
     } catch (error) {
       console.error("Login failed:", error);
       alert("Login failed. Check your credentials.");
@@ -32,40 +48,32 @@ const Login = ({ onLogin }) => {
   const formStyle = {
     padding: "30px",
     borderRadius: "12px",
-    background: "#fff",
+    background: "#ffffff",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
     width: "350px",
   };
 
-  const tableStyle = {
-    width: "100%",
-  };
-
   const inputStyle = {
     width: "100%",
-    padding: "8px",
+    padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    marginTop: "4px",
-    marginBottom: "12px",
+    marginTop: "10px",
+    marginBottom: "16px",
     fontSize: "14px",
   };
 
   const buttonStyle = {
     width: "100%",
-    padding: "10px",
+    padding: "12px",
     backgroundColor: "#007BFF",
-    color: "#fff",
+    color: "#ffffff",
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: "bold",
     fontSize: "16px",
-  };
-
-  const linkStyle = {
-    color: "#007BFF",
-    textDecoration: "none",
+    marginTop: "10px",
   };
 
   const headingStyle = {
@@ -74,66 +82,52 @@ const Login = ({ onLogin }) => {
     color: "#333",
   };
 
+  const linkStyle = {
+    color: "#007BFF",
+    textDecoration: "none",
+  };
+
+  const textCenterStyle = {
+    textAlign: "center",
+    marginTop: "12px",
+    fontSize: "14px",
+    color: "#555",
+  };
+
   return (
     <div style={containerStyle}>
       <form style={formStyle} onSubmit={handleSubmit}>
         <h2 style={headingStyle}>Credit Score</h2>
         <h3 style={headingStyle}>Login</h3>
-        <table style={tableStyle}>
-          <tbody>
-            <tr>
-              <td>
-                <label htmlFor="username">Username:</label>
-              </td>
-              <td>
-                <input
-                  id="username"
-                  name="username"
-                  placeholder="Enter username"
-                  onChange={handleChange}
-                  style={inputStyle}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="password">Password:</label>
-              </td>
-              <td>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Enter password"
-                  onChange={handleChange}
-                  style={inputStyle}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="2">
-                <button type="submit" style={buttonStyle}>
-                  Login
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td
-                colSpan="2"
-                style={{ textAlign: "center", paddingTop: "12px" }}
-              >
-                <p>
-                  Don’t have an account?{" "}
-                  <Link to="/register" style={linkStyle}>
-                    Register here
-                  </Link>
-                </p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          onChange={handleChange}
+          style={inputStyle}
+          required
+        />
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          onChange={handleChange}
+          style={inputStyle}
+          required
+        />
+        <button type="submit" style={buttonStyle}>
+          Login
+        </button>
+        <div style={textCenterStyle}>
+          Don’t have an account?{" "}
+          <Link to="/register" style={linkStyle}>
+            Register here
+          </Link>
+        </div>
       </form>
     </div>
   );

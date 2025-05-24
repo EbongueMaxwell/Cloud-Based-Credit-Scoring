@@ -3,13 +3,20 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Register = () => {
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "", email: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Optional Gmail-only check
+    if (!form.email.endsWith("@gmail.com")) {
+      alert("Please use a valid Gmail address.");
+      return;
+    }
+
     try {
       await axios.post("http://localhost:8000/register", form);
       alert("Registration successful!");
@@ -33,7 +40,7 @@ const Register = () => {
     borderRadius: "12px",
     background: "#fff",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-    width: "350px",
+    width: "400px",
   };
 
   const tableStyle = {
@@ -88,6 +95,22 @@ const Register = () => {
                   id="username"
                   name="username"
                   placeholder="Enter username"
+                  onChange={handleChange}
+                  style={inputStyle}
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label htmlFor="email">Email:</label>
+              </td>
+              <td>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter email address"
                   onChange={handleChange}
                   style={inputStyle}
                   required
