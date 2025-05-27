@@ -1,41 +1,55 @@
-// Login.js
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
   const [form, setForm] = useState({ email: "", password: "" });
-  const navigate = useNavigate(); // <== Add this
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
     try {
       const formData = new URLSearchParams();
-      formData.append("username", form.email);
+      formData.append("username", form.email); // Use "username" as required by FastAPI's OAuth2
       formData.append("password", form.password);
 
       const response = await axios.post(
         "http://localhost:8000/login",
         formData,
         {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
         }
       );
 
       localStorage.setItem("token", response.data.access_token);
-      if (onLogin) onLogin(); // Call it safely
-      navigate("/dashboard"); // Redirect here// 👈 redirect to dashboard
+      if (onLogin) onLogin();
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Check your credentials.");
+      if (error.response) {
+        setError(error.response.data.detail || "Invalid email or password");
+      } else if (error.request) {
+        setError("Network error. Please try again.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Styles
   const containerStyle = {
     display: "flex",
     justifyContent: "center",
@@ -74,6 +88,8 @@ const Login = ({ onLogin }) => {
     fontWeight: "bold",
     fontSize: "16px",
     marginTop: "10px",
+    opacity: isLoading ? 0.7 : 1,
+    pointerEvents: isLoading ? "none" : "auto",
   };
 
   const headingStyle = {
@@ -94,36 +110,56 @@ const Login = ({ onLogin }) => {
     color: "#555",
   };
 
+  const errorStyle = {
+    color: "red",
+    marginBottom: "16px",
+    textAlign: "center",
+  };
+
   return (
     <div style={containerStyle}>
       <form style={formStyle} onSubmit={handleSubmit}>
         <h2 style={headingStyle}>Credit Score</h2>
         <h3 style={headingStyle}>Login</h3>
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          onChange={handleChange}
-          style={inputStyle}
-          required
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          onChange={handleChange}
-          style={inputStyle}
-          required
-        />
-        <button type="submit" style={buttonStyle}>
-          Login
+
+        {error && <div style={errorStyle}>{error}</div>}
+
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={form.email}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            value={form.password}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <button type="submit" style={buttonStyle} disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
         </button>
+
         <div style={textCenterStyle}>
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" style={linkStyle}>
             Register here
           </Link>
