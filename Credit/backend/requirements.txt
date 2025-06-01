@@ -8,4 +8,6 @@ python-jose
 passlib[bcrypt]
 bootstrap-icons
 jwt-decode bootstrap
-
+pip install pydantic[email]
+pip install fastapi uvicorn
+pip install python-multipart
