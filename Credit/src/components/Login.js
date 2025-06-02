@@ -32,9 +32,10 @@ const Login = ({ onLogin }) => {
         }
       );
 
+      // Store token and redirect
       localStorage.setItem("token", response.data.access_token);
-      if (onLogin) onLogin();
-      navigate("/dashboard");
+      if (onLogin) onLogin(); // Call onLogin callback if provided
+      navigate("/dashboard"); // Redirect to the dashboard
     } catch (error) {
       console.error("Login failed:", error);
       if (error.response) {
@@ -45,7 +46,7 @@ const Login = ({ onLogin }) => {
         setError("An unexpected error occurred.");
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Always reset loading state
     }
   };
 
