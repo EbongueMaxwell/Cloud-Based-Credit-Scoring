@@ -3,6 +3,7 @@ import Badge from "./Badge"; // Adjust path if needed
 import {
   User,
   Brain,
+  Check,
   CreditCard,
   TrendingUp,
   CheckCircle,
@@ -122,7 +123,7 @@ const ApplicationForm = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            <User className="text-primary" /> Credit Application
+            <Check size={25} color="#2563eb" /> Credit Application
           </CardTitle>
           <CardDescription>
             Enter applicant information for AI-powered credit assessment.

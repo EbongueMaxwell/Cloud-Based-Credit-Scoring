@@ -71,10 +71,10 @@ const HomePage: React.FC = () => {
           <span className="fw-bold fs-5">AI Credit Risk</span>
         </div>
         <nav className="d-flex align-items-center">
-          <Link to="/scoring" className="nav-link px-3 text-secondary">
+          <Link to="/login" className="nav-link px-3 text-secondary">
             Credit Scoring
           </Link>
-          <Link to="/analytics" className="nav-link px-3 text-secondary">
+          <Link to="/login" className="nav-link px-3 text-secondary">
             Analytics
           </Link>
           <Link to="/login" className="btn btn-primary ms-3">
@@ -98,10 +98,10 @@ const HomePage: React.FC = () => {
           underserved populations.
         </p>
         <div>
-          <Link to="/dashboard" className="btn btn-primary me-2">
+          <Link to="/" className="btn btn-primary me-2">
             Explore Dashboard
           </Link>
-          <Link to="/scoring" className="btn btn-outline-primary">
+          <Link to="/register" className="btn btn-outline-primary">
             Try Credit Scoring
           </Link>
         </div>
