@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
+/* src/globals.css */
+import "bootstrap/dist/css/bootstrap.min.css";
 import App from './App';
+import "@fortawesome/fontawesome-free/css/all.css";
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
