@@ -19,7 +19,7 @@ const Login = ({ onLogin }) => {
 
     try {
       const formData = new URLSearchParams();
-      formData.append("username", form.email); // Use "username" as required by FastAPI's OAuth2
+      formData.append("username", form.email);
       formData.append("password", form.password);
 
       const response = await axios.post(
@@ -32,21 +32,38 @@ const Login = ({ onLogin }) => {
         }
       );
 
-      // Store token and redirect
-      localStorage.setItem("token", response.data.access_token);
-      if (onLogin) onLogin(); // Call onLogin callback if provided
-      navigate("/dashboard"); // Redirect to the dashboard
-    } catch (error) {
-      console.error("Login failed:", error);
-      if (error.response) {
-        setError(error.response.data.detail || "Invalid email or password");
-      } else if (error.request) {
-        setError("Network error. Please try again.");
-      } else {
-        setError("An unexpected error occurred.");
+      if (!response.data.access_token) {
+        throw new Error("No token received");
       }
+
+      // Store token and user email
+      localStorage.setItem("authToken", response.data.access_token);
+      localStorage.setItem("userEmail", form.email);
+
+      // Set default authorization header for axios
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.access_token}`;
+
+      // Callback and redirect
+      if (onLogin) onLogin(response.data.access_token);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+
+      let errorMessage = "An unexpected error occurred";
+      if (error.response) {
+        errorMessage =
+          error.response.data.detail ||
+          error.response.data.message ||
+          "Invalid email or password";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setError(errorMessage);
     } finally {
-      setIsLoading(false); // Always reset loading state
+      setIsLoading(false);
     }
   };
 
@@ -56,16 +73,19 @@ const Login = ({ onLogin }) => {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    background: "#f4f7fa",
+    backgroundImage: "url('/Installment Loan Advisors.jpeg')", // ✅ image path (in public folder)
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
     fontFamily: "Arial, sans-serif",
   };
 
   const formStyle = {
-    padding: "30px",
-    borderRadius: "12px",
+    padding: "60px",
+    borderRadius: "10px",
     background: "#ffffff",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-    width: "350px",
+    width: "500px",
   };
 
   const inputStyle = {
@@ -75,7 +95,7 @@ const Login = ({ onLogin }) => {
     border: "1px solid #ccc",
     marginTop: "10px",
     marginBottom: "16px",
-    fontSize: "14px",
+    fontSize: "16px",
   };
 
   const buttonStyle = {
@@ -107,7 +127,7 @@ const Login = ({ onLogin }) => {
   const textCenterStyle = {
     textAlign: "center",
     marginTop: "12px",
-    fontSize: "14px",
+    fontSize: "16px",
     color: "#555",
   };
 

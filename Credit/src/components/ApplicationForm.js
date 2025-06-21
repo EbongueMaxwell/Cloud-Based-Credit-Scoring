@@ -1,56 +1,38 @@
 import React, { useState } from "react";
-import Badge from "./Badge"; // Adjust path if needed
-import {
-  User,
-  Brain,
-  Check,
-  CreditCard,
-  TrendingUp,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-} from "lucide-react";
+import { Brain, Check } from "lucide-react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Card = ({ children }) => (
   <div className="card shadow-sm mb-4 rounded-3">{children}</div>
 );
-
 const CardHeader = ({ children }) => (
   <div className="card-header bg-light border-bottom">{children}</div>
 );
-
 const CardContent = ({ children }) => (
   <div className="card-body bg-white">{children}</div>
 );
-
 const CardTitle = ({ children }) => (
   <h5 className="card-title mb-1 d-flex align-items-center gap-2">
     {children}
   </h5>
 );
-
 const CardDescription = ({ children }) => (
   <p className="text-muted mb-0">{children}</p>
 );
-
 const Label = ({ htmlFor, children }) => (
   <label htmlFor={htmlFor} className="form-label fw-semibold">
     {children}
   </label>
 );
-
 const Input = ({ id, ...props }) => (
   <input id={id} className="form-control rounded-2" {...props} />
 );
-
 const Select = ({ id, children, onChange }) => (
   <select id={id} className="form-select rounded-2" onChange={onChange}>
     {children}
   </select>
 );
-
 const Button = ({
   children,
   variant = "primary",
@@ -65,7 +47,6 @@ const Button = ({
     </button>
   );
 };
-
 const Progress = ({ value }) => (
   <div className="progress" style={{ height: "20px" }}>
     <div
@@ -83,8 +64,7 @@ const Progress = ({ value }) => (
 
 const ApplicationForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    client_name: "",
     age: "",
     income: "",
     employment: "",
@@ -93,33 +73,58 @@ const ApplicationForm = () => {
     location: "",
     phoneUsage: "",
     utilityPayments: "",
+    interestRate: "",
+    turnover: "",
+    customerTenure: "",
+    avgDaysLateCurrent: "",
+    numLatePaymentsCurrent: "",
+    unpaidAmount: "",
+    industrySector: "",
+    creditType: "",
+    hasGuarantee: "",
+    guaranteeType: "",
+    repaymentFrequency: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [creditScore, setCreditScore] = useState(0);
-  const [riskLevel, setRiskLevel] = useState("Low");
+  const [riskLevel, setRiskLevel] = useState("");
   const [approvalProbability, setApprovalProbability] = useState(0);
 
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setCreditScore(750);
-      setRiskLevel("Low");
-      setApprovalProbability(85);
+    setShowResults(false);
+
+    try {
+      const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error("Prediction request failed");
+
+      const result = await response.json();
+      setCreditScore(result.creditScore);
+      setRiskLevel(result.riskLevel);
+      setApprovalProbability(result.approvalProbability);
       setShowResults(true);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error processing credit prediction.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return (
     <div className="container py-4">
-      {/* Application Form */}
       <Card>
         <CardHeader>
           <CardTitle>
@@ -132,30 +137,19 @@ const ApplicationForm = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="mb-4">
             <div className="row g-3">
+              {/* Existing fields */}
               <div className="col-md-6">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="client_name">Client Name</Label>
                 <Input
-                  id="firstName"
-                  value={formData.firstName}
+                  id="client_name"
+                  value={formData.client_name}
                   onChange={(e) =>
-                    handleInputChange("firstName", e.target.value)
+                    handleInputChange("client_name", e.target.value)
                   }
-                  placeholder="John"
                   required
                 />
               </div>
-              <div className="col-md-6">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) =>
-                    handleInputChange("lastName", e.target.value)
-                  }
-                  placeholder="Doe"
-                  required
-                />
-              </div>
+
               <div className="col-md-6">
                 <Label htmlFor="age">Age</Label>
                 <Input
@@ -163,7 +157,6 @@ const ApplicationForm = () => {
                   type="number"
                   value={formData.age}
                   onChange={(e) => handleInputChange("age", e.target.value)}
-                  placeholder="30"
                   required
                 />
               </div>
@@ -174,7 +167,6 @@ const ApplicationForm = () => {
                   type="number"
                   value={formData.income}
                   onChange={(e) => handleInputChange("income", e.target.value)}
-                  placeholder="500000"
                   required
                 />
               </div>
@@ -202,7 +194,6 @@ const ApplicationForm = () => {
                   onChange={(e) =>
                     handleInputChange("loanAmount", e.target.value)
                   }
-                  placeholder="2000000"
                   required
                 />
               </div>
@@ -229,7 +220,6 @@ const ApplicationForm = () => {
                   onChange={(e) =>
                     handleInputChange("location", e.target.value)
                   }
-                  placeholder="Douala, Cameroon"
                   required
                 />
               </div>
@@ -263,8 +253,159 @@ const ApplicationForm = () => {
                   <option value="poor">Often late</option>
                 </Select>
               </div>
-            </div>
+              {/* ... existing JSX ... */}
 
+              {/* Additional Numeric Fields */}
+              <div className="col-md-6">
+                <Label htmlFor="interestRate">Interest Rate (%)</Label>
+                <Input
+                  id="interestRate"
+                  type="number"
+                  value={formData.interestRate}
+                  onChange={(e) =>
+                    handleInputChange("interestRate", e.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="turnover">Monthly Turnover</Label>
+                <Input
+                  id="turnover"
+                  type="number"
+                  value={formData.turnover}
+                  onChange={(e) =>
+                    handleInputChange("turnover", e.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="customerTenure">Customer Tenure (months)</Label>
+                <Input
+                  id="customerTenure"
+                  type="number"
+                  value={formData.customerTenure}
+                  onChange={(e) =>
+                    handleInputChange("customerTenure", e.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="avgDaysLateCurrent">
+                  Avg. Days Late (Current)
+                </Label>
+                <Input
+                  id="avgDaysLateCurrent"
+                  type="number"
+                  value={formData.avgDaysLateCurrent}
+                  onChange={(e) =>
+                    handleInputChange("avgDaysLateCurrent", e.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="numLatePaymentsCurrent">
+                  # Late Payments (Current)
+                </Label>
+                <Input
+                  id="numLatePaymentsCurrent"
+                  type="number"
+                  value={formData.numLatePaymentsCurrent}
+                  onChange={(e) =>
+                    handleInputChange("numLatePaymentsCurrent", e.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="unpaidAmount">Unpaid Amount</Label>
+                <Input
+                  id="unpaidAmount"
+                  type="number"
+                  value={formData.unpaidAmount}
+                  onChange={(e) =>
+                    handleInputChange("unpaidAmount", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              {/* Additional Categorical Fields */}
+              <div className="col-md-6">
+                <Label htmlFor="industrySector">Industry Sector</Label>
+                <Select
+                  id="industrySector"
+                  onChange={(e) =>
+                    handleInputChange("industrySector", e.target.value)
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="retail">Retail</option>
+                  <option value="services">Services</option>
+                  <option value="agriculture">Agriculture</option>
+                  <option value="technology">Technology</option>
+                  <option value="finance">Finance</option>
+                  <option value="healthcare">Health Care</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="construction">Construction</option>
+                </Select>
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="creditType">Credit Type</Label>
+                <Select
+                  id="creditType"
+                  onChange={(e) =>
+                    handleInputChange("creditType", e.target.value)
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="term_loan">Term Loan</option>
+                  <option value="line_of_credit">Line of Credit</option>
+                </Select>
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="hasGuarantee">Has Guarantee?</Label>
+                <Select
+                  id="hasGuarantee"
+                  onChange={(e) =>
+                    handleInputChange("hasGuarantee", e.target.value)
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </Select>
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="guaranteeType">Guarantee Type</Label>
+                <Select
+                  id="guaranteeType"
+                  onChange={(e) =>
+                    handleInputChange("guaranteeType", e.target.value)
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="collateral">Collateral</option>
+                  <option value="third_party">Third-Party</option>
+                </Select>
+              </div>
+              <div className="col-md-6">
+                <Label htmlFor="repaymentFrequency">Repayment Frequency</Label>
+                <Select
+                  id="repaymentFrequency"
+                  onChange={(e) =>
+                    handleInputChange("repaymentFrequency", e.target.value)
+                  }
+                >
+                  <option value="">Select</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                </Select>
+              </div>
+            </div>
             <div className="mt-4">
               <Button type="submit" disabled={isLoading} className="w-100">
                 {isLoading ? "Processing with AI..." : "Analyze Credit Risk"}
@@ -274,7 +415,6 @@ const ApplicationForm = () => {
         </CardContent>
       </Card>
 
-      {/* Loading and Results */}
       {isLoading && (
         <Card>
           <CardHeader>
@@ -283,30 +423,30 @@ const ApplicationForm = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-3">
-              <small>Analyzing credit data...</small>
-              <Progress value={100} />
-            </div>
-            <div className="mb-3">
-              <small>Processing alternative data...</small>
-              <Progress value={75} />
-            </div>
-            <div className="mb-3">
-              <small>Running machine learning models...</small>
-              <Progress value={45} />
-            </div>
-            <div>
-              <small>Bias and compliance checks...</small>
-              <Progress value={20} />
-            </div>
+            <Progress value={100} />
           </CardContent>
         </Card>
       )}
 
       {showResults && (
-        <>
-          {/* Render your results cards here (Credit Score, Risk Factors, etc.) exactly as in your code above */}
-        </>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Check size={24} className="text-success" /> Credit Score Result
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              <strong>Credit Score:</strong> {creditScore}
+            </p>
+            <p>
+              <strong>Risk Level:</strong> {riskLevel}
+            </p>
+            <p>
+              <strong>Approval Probability:</strong> {approvalProbability}%
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

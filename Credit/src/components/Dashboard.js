@@ -88,8 +88,8 @@ const Dashboard = () => {
       ).length,
     },
     {
-      name: "Low (668-739)",
-      range: "668-739",
+      name: "Low (668-850)",
+      range: "668-850",
       count: clientList.filter(
         (c) => c.creditScore >= 668 && c.creditScore <= 739
       ).length,

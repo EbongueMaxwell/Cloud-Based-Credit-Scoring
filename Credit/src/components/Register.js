@@ -1,46 +1,56 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate here
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", password: "", email: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // Now properly imported
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Optional Gmail-only check
     if (!form.email.endsWith("@gmail.com")) {
       alert("Please use a valid Gmail address.");
+      setIsLoading(false);
       return;
     }
 
     try {
       await axios.post("http://localhost:8000/register", form);
-      alert("Registration successful!");
+      navigate("/login"); // Redirect on success
     } catch (error) {
       console.error("Registration failed:", error);
-      alert("Registration failed. Try again.");
+      alert(error.response?.data?.detail || "Registration failed. Try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // ... rest of your component code remains the same ...
 
   const containerStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    background: "#f4f7fa",
+    backgroundImage: "url('/Managing debt client.jpeg')", // ✅ image path (in public folder)
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
     fontFamily: "Arial, sans-serif",
   };
-
   const formStyle = {
-    padding: "30px",
+    padding: "35px",
     borderRadius: "12px",
     background: "#fff",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-    width: "400px",
+    width: "600px",
   };
 
   const tableStyle = {
@@ -54,7 +64,7 @@ const Register = () => {
     border: "1px solid #ccc",
     marginTop: "4px",
     marginBottom: "12px",
-    fontSize: "14px",
+    fontSize: "16px",
   };
 
   const buttonStyle = {
@@ -147,7 +157,7 @@ const Register = () => {
               >
                 <p>
                   Already have an account?{" "}
-                  <Link to="/" style={linkStyle}>
+                  <Link to="/login" style={linkStyle}>
                     Login here
                   </Link>
                 </p>

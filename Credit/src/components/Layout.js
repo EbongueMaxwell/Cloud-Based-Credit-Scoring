@@ -50,33 +50,33 @@ const Layout = ({ children, userEmail, sidebarOpen, toggleSidebar }) => {
           <ul className="nav flex-column">
             <li className="nav-item mb-2">
               <Link to="/" className="nav-link text-white">
-                <House size={25} color="#2563eb" />
+                <House size={25} color="white" />
                 Home
               </Link>
             </li>
             <li className="nav-item mb-2">
               <Link to="/dashboard" className="nav-link text-white">
-                <Gauge size={25} color="#2563eb" /> Dashboard
+                <Gauge size={25} color="white" /> Dashboard
               </Link>
             </li>
             <li className="nav-item mb-2">
               <Link to="/scoring" className="nav-link text-white">
-                <ReceiptText size={25} color="#2563eb" /> Apply for Credit
+                <ReceiptText size={25} color="white" /> Apply for Credit
               </Link>
             </li>
             <li className="nav-item mb-2">
               <button className="nav-link text-white bg-transparent border-0">
-                <Users size={25} color="#2563eb" /> Clients
+                <Users size={25} color="white" /> Clients
               </button>
             </li>
             <li className="nav-item mb-2">
               <button className="nav-link text-white bg-transparent border-0">
-                <FolderOpenDot size={25} color="#2563eb" /> Reports
+                <FolderOpenDot size={25} color="white" /> Reports
               </button>
             </li>
             <li className="nav-item mb-2">
               <button className="nav-link text-white bg-transparent border-0">
-                <Settings size={25} color="#2563eb" /> Settings
+                <Settings size={25} color="white" /> Settings
               </button>
             </li>
           </ul>
@@ -118,7 +118,7 @@ const Layout = ({ children, userEmail, sidebarOpen, toggleSidebar }) => {
           <div className="d-flex align-items-center gap-3">
             {userEmail && (
               <span className="fw-semibold text-primary d-none d-md-inline">
-                Welcome, {userEmail.split("@")[0]} 👋
+                Analyst
               </span>
             )}
             <button className="btn btn-sm btn-outline-secondary position-relative">

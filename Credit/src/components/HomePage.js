@@ -67,15 +67,22 @@ const HomePage: React.FC = () => {
       {/* Header */}
       <header className="navbar sticky-top bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center gap-2">
-          <Brain size={28} color="#2563eb" />
+          <img
+            src="/mylogo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            className="rounded-full"
+          />
+
           <span className="fw-bold fs-5">AI Credit Risk</span>
         </div>
         <nav className="d-flex align-items-center">
-          <Link to="/login" className="nav-link px-3 text-secondary">
-            Credit Scoring
+          <Link to="/" className="nav-link px-3 text-secondary">
+            Home
           </Link>
-          <Link to="/login" className="nav-link px-3 text-secondary">
-            Analytics
+          <Link to="/about" className="nav-link px-3 text-secondary">
+            About
           </Link>
           <Link to="/login" className="btn btn-primary ms-3">
             Get Started
@@ -92,25 +99,17 @@ const HomePage: React.FC = () => {
           Artificial Intelligence in the{" "}
           <span className="text-primary">Analysis of Credit Risk</span>
         </h1>
-        <p className="text-muted mb-4 mx-auto" style={{ maxWidth: 700 }}>
+        <p className="text-muted mb-4 mx-auto" style={{ maxWidth: 900 }}>
           Revolutionizing credit scoring through AI-powered analysis, promoting
           financial inclusion and reducing bias in lending decisions for
           underserved populations.
         </p>
-        <div>
-          <Link to="/" className="btn btn-primary me-2">
-            Explore Dashboard
-          </Link>
-          <Link to="/register" className="btn btn-outline-primary">
-            Try Credit Scoring
-          </Link>
-        </div>
       </section>
 
       {/* Features */}
-      <section className="py-5 bg-light">
+      <section className="py-5 features-section">
         <div className="container">
-          <h2 className="text-center fw-bold mb-5">Key Features</h2>
+          <h2 className="text-center fw-bold mb-5 text-white">Key Features</h2>
           <div className="row g-4">
             {features.map((feature, idx) => (
               <div key={idx} className="col-md-6 col-lg-4">
@@ -173,16 +172,104 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-dark text-white text-center py-5">
-        <div className="d-flex justify-content-center align-items-center mb-2">
-          <Brain size={20} className="me-2" />
-          <span className="fw-bold">AI Credit Risk Analysis</span>
-        </div>
+      <footer className="bg-dark text-white text-center text-lg-start py-5 px-3">
+        <div className="container">
+          {/* Logo and Title */}
+          <div className="d-flex justify-content-center align-items-center mb-4">
+            <Brain size={20} className="me-2" />
+            <span className="fw-bold">AI Credit Risk Analysis</span>
+          </div>
+          {/*phrase statements */}
+          <div>
+            <p>
+              <center>
+                Credit risk analysis evaluates a borrower's likelihood of
+                defaulting on a loan, helping lenders make informed financial
+                decisions.
+              </center>
+            </p>
+          </div>
+          <div className="row text-start">
+            {/* Contact Info */}
+            <div className="col-md-4 mb-4">
+              <h5 className="text-uppercase fw-bold">Contact</h5>
+              <p className="mb-1">
+                <i className="bi bi-geo-alt-fill me-2"></i> Douala, Cameroon
+              </p>
+              <p className="mb-1">
+                <i className="bi bi-telephone-fill me-2"></i> +237 655182969
+              </p>
+              <p className="mb-1">
+                <i className="bi bi-envelope-fill me-2"></i> maxwell@example.com
+              </p>
+            </div>
 
-        
-        <p className="small text-secondary">
-          DEVELOPED by MR. EBONGUE NSAME ELIE MAXWELL | Cloud Computing Department
-        </p>
+            {/* Quick Links */}
+            <div className="col-md-4 mb-4">
+              <h5 className="text-uppercase fw-bold">Quick Links</h5>
+              <ul className="list-unstyled">
+                <li>
+                  <a href="/" className="text-white text-decoration-none">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="/about" className="text-white text-decoration-none">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/dashboard"
+                    className="text-white text-decoration-none"
+                  >
+                    Dashboard
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div className="col-md-4 mb-4">
+              <h5 className="text-uppercase fw-bold">Legal</h5>
+              <ul className="list-unstyled">
+                <li>
+                  <a
+                    href="/privacy"
+                    className="text-white text-decoration-none"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms" className="text-white text-decoration-none">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/support"
+                    className="text-white text-decoration-none"
+                  >
+                    Support
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Footer Note */}
+          <div className="text-center mt-4">
+            <p className="small text-secondary mb-2">
+              DEVELOPED by MR. EBONGUE NSAME ELIE MAXWELL | Cloud Computing
+              Department
+            </p>
+            <hr className="border-secondary" />
+            <p className="small text-secondary mt-2 mb-0">
+              &copy; {new Date().getFullYear()} All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
